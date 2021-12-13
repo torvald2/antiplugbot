@@ -1,14 +1,16 @@
+from logging import exception
 import fitz
 
 
-def getPagesText(pdf):
+def getPagesText(buf):
     texts = []
     try:
-        doc = fitz.open("pdf",pdf)
+        doc = fitz.open("pdf",buf)
         for page in doc:
+            
             texts.append(page.get_text())
-    except:
-        print(f"Bad file {pdf}")
+    except Exception as e:
+        print(e)
     return texts
 
 
