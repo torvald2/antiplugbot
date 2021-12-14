@@ -53,7 +53,7 @@ def document_action(message):
         downloaded_file = bot.download_file(file_info.file_path)
         bot.send_message(message.from_user.id, "Сравнение...")
         buf = BytesIO(downloaded_file)
-        sim = processor.GetSimilarDocs(buf)
+        sim = processor.GetSimilarDocs(buf,message.document.file_name)
         if len(sim)>0:
             bot.send_message(message.from_user.id,"Найдено совпадение:")
             mackup = telebot.types.ReplyKeyboardMarkup()
