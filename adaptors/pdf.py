@@ -13,6 +13,3 @@ def getPagesText(buf):
         print(e)
     return texts
 
-
-
-        

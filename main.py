@@ -14,13 +14,14 @@ class Stages(Enum):
 
 dbUser = os.environ.get("DB_USER")
 dbPassword = os.environ.get("DB_PASSWORD")
-dbHost = os.environ.get("DB_PORT")
+dbHost = os.environ.get("DB_HOST")
+dbPort = os.environ.get("DB_PORT")
 
 telegramKey = os.environ.get("TELE_KEY")
 
 bot = telebot.TeleBot(telegramKey, parse_mode="HTML")
 
-db = DBConnect(dbUser, dbPassword, dbHost)
+db = DBConnect(dbUser, dbPassword, dbHost,)
 
 processor = Processor(db)
 
