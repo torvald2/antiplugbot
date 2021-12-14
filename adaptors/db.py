@@ -8,9 +8,9 @@ class DBConnect:
         self.host =host
         self.port = port
         self.db = "recognize"
-
-        self.__create_tables()
+        
         self.__create_db()
+        self.__create_tables()
     
  
 
