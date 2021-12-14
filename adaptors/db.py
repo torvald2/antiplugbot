@@ -34,7 +34,6 @@ class DBConnect:
         exists = cur.fetchone()
         if not exists:
             cur.execute('CREATE DATABASE recognize')
-        con.commit()
         cur.close()
         con.close()
 
