@@ -2,12 +2,12 @@ import psycopg2
 
 
 class DBConnect:
-    def __init__(self, user, password, host,port,db):
+    def __init__(self, user, password, host,port):
         self.user = user
         self.password = password
         self.host =host
         self.port = port
-        self.db = db
+        self.db = "recognize"
 
         self.__create_tables()
         self.__create_db()
@@ -23,13 +23,17 @@ class DBConnect:
                                )
      
     def __create_db(self):
-        con = self.__get_connect()
+        con = psycopg2.connect(user = self.user,
+                               password=self.password,
+                               host = self.host,
+                               port = self.port,
+                               )
         cur = con.cursor()
 
-        cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'python_db'")
+        cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'recognize'")
         exists = cur.fetchone()
         if not exists:
-            cur.execute('CREATE DATABASE python_db')
+            cur.execute('CREATE DATABASE recognize')
         con.commit()
         cur.close()
         con.close()

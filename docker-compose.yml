@@ -1,0 +1,21 @@
+version: "3.4"
+services:
+  worker:
+    build:
+      context: .
+      network: host
+    environment:
+        DB_USER: postgres
+        DB_PASSWORD: Cbvajybz13
+        DB_PORT: 5432
+        TELE_KEY: 5055454449:AAHHz0T6PwsN5vcY85cyBCYH2f0PM1R73jc
+    depends_on:
+      - storage
+  storage:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment: 
+        POSTGRES_PASSWORD: Cbvajybz13
+    volumes:
+        - ./pgdata:/var/lib/postgresql/data:z
