@@ -21,7 +21,7 @@ telegramKey = os.environ.get("TELE_KEY")
 
 bot = telebot.TeleBot(telegramKey, parse_mode="HTML")
 
-db = DBConnect(dbUser, dbPassword, dbHost,)
+db = DBConnect(dbUser, dbPassword, dbHost,dbPort)
 
 processor = Processor(db)
 
