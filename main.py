@@ -1,4 +1,5 @@
 from nltk.util import pr
+import os 
 import telebot
 from enum import Enum
 from services.similar import Processor
@@ -11,14 +12,17 @@ class Stages(Enum):
     PAGINATE= 2
 
 
-bot = telebot.TeleBot("5055454449:AAHHz0T6PwsN5vcY85cyBCYH2f0PM1R73jc", parse_mode="HTML")
+dbUser = os.environ.get("DB_USER")
+dbPassword = os.environ.get("DB_PASSWORD")
+dbHost = os.environ.get("DB_PORT")
+dbName = os.environ.get("DB_NAME")
 
-db = DBConnect("wxpdtfrapvwyqy",
-                   "dfb747abe69e97535f929ce3522a19335e8fa6ae1d7d0161866c2f1d69e02d62",
-                   "ec2-3-89-214-80.compute-1.amazonaws.com",
-                   "5432",
-                   "d9beuhrts4uk1d"
-                   )
+telegramKey = os.environ.get("TELE_KEY")
+
+bot = telebot.TeleBot(telegramKey, parse_mode="HTML")
+
+db = DBConnect(dbUser, dbPassword, dbHost,dbName)
+
 processor = Processor(db)
 
 sessions = {}

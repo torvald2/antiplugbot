@@ -10,6 +10,7 @@ class DBConnect:
         self.db = db
 
         self.__create_tables()
+        self.__create_db()
     
  
 
@@ -20,6 +21,18 @@ class DBConnect:
                                port = self.port,
                                database = self.db
                                )
+     
+    def __create_db(self):
+        con = self.__get_connect()
+        cur = con.cursor()
+
+        cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'python_db'")
+        exists = cur.fetchone()
+        if not exists:
+            cur.execute('CREATE DATABASE python_db')
+        con.commit()
+        cur.close()
+        con.close()
 
     
     def __create_tables(self):
