@@ -1,5 +1,5 @@
 import psycopg2
-
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class DBConnect:
     def __init__(self, user, password, host,port):
@@ -28,6 +28,7 @@ class DBConnect:
                                host = self.host,
                                port = self.port,
                                )
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
         cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'recognize'")
