@@ -52,12 +52,22 @@ class DBConnect:
                  )
         
         ''')
+        cursor.execute('''
+                 CREATE TABLE IF NOT EXISTS docs
+                 (
+                     id SERIAL,
+                     doc_name TEXT NOT NULL,
+                     data bytea NOT NULL,
+                 )
+        
+        ''')
+
 
         con.commit()
         cursor.close()
         con.close()
 
-    def create_doc(self, doc_name, pages):
+    def create_doc(self, doc_name, pages, docBytes):
         con = self.__get_connect()
         cursor = con.cursor()
         i = 1
@@ -68,6 +78,11 @@ class DBConnect:
                  VALUES (%s, %s, %s)
                  ''', (doc_name,i,page))
             i+=1
+        cursor.execute(f'''
+            INSERT INTO docs
+            (doc_name, data)
+            VALUES (%s, %s)
+        ''', (doc_name,docBytes))
         con.commit()
         cursor.close()
         con.close()

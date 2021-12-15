@@ -11,7 +11,7 @@ class Processor:
     def GetSimilarDocs(self, doc, doc_name):
         result = []
         pages = getPagesText(doc)
-        self.db.create_doc(doc_name, pages)
+        self.db.create_doc(doc_name, pages, doc.read())
         pageVec = self.v.getDocVectors(pages)
         i = 1
         for page in pageVec:
