@@ -57,7 +57,7 @@ class DBConnect:
                  (
                      id SERIAL,
                      doc_name TEXT NOT NULL,
-                     data bytea NOT NULL,
+                     data bytea NOT NULL
                  )
         
         ''')
@@ -99,8 +99,50 @@ class DBConnect:
             metadata.append([doc[0],doc[1]])
         
         return (texts, metadata)
+        
+    def create_only_doc_bytes(self, doc_name, docBytes):
+        con = self.__get_connect()
+        cursor = con.cursor()    
+        cursor.execute(f'''
+            INSERT INTO docs
+            (doc_name, data)
+            VALUES (%s, %s)
+        ''', (doc_name,psycopg2.Binary(docBytes)))
+        con.commit()
+        cursor.close()
+        con.close()
     
+    def get_doc_names(self, limit, offset):
+        data = []
+        con = self.__get_connect()
+        cur = con.cursor()
+        cur.execute("SELECT doc_name FROM docs LIMIT=%s OFFSET=%s",(limit, offset))
+        for doc in cur.fetchall():
+            data.append(doc[0])
+        cur.close()
+        con.close()
+        return data
+
     
+    def get_docs_count(self):
+        con = self.__get_connect()
+        cur = con.cursor()
+        cur.execute("SELECT count(*) FROM docs")
+        data = cur.fetchone()
+        return data[0]
+        
+
+    def doc_by_name(self, name):
+        con = self.__get_connect()
+        cur = con.cursor()
+        cur.execute("SELECT data FROM docs WHERE doc_name=%s ",(name))
+        blob = cur.fetchone()
+        cur.close()
+        con.close()
+        return blob[0]
+
+
+
 
         
         

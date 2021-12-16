@@ -17,4 +17,15 @@ def loadToDb():
             if len(texts)>0:
                 db.create_doc(pdf,texts)
 
-loadToDb()
+def loadFilesToDb():
+    db = DBConnect("postgres",
+                   "Cbvajybz13",
+                   "195.2.74.188",
+                   "5432",
+                   )
+    for pdf in os.listdir("./PDF"):
+        with open("./PDF/"+pdf,"rb") as f:
+            db.create_only_doc_bytes(pdf, f.read())
+
+
+loadFilesToDb()

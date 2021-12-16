@@ -20,5 +20,12 @@ def FormatTable(items):
     res+= "</pre>"
 
     return res
+
+def FormatList(items):
+    res = '<pre> \n'
+    for item in items:
+        res += f'* {item}\n'
+    res+= "</pre>"
+    return res
         
         
