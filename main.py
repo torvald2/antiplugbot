@@ -127,6 +127,7 @@ def keyboardActions(message):
         session = sessions.get(message.from_user.id)
         doc = message.text[3:]
         if  session and session["stage"]  == Stages.COMPARING:
+            print(session)
             docs = session["doc_names"]
             loaded_docs = session["loaded_docs"]
             docs.append(doc)

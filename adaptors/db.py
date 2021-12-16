@@ -99,6 +99,9 @@ class DBConnect:
             metadata.append([doc[0],doc[1]])
         
         return (texts, metadata)
+
+    def get_doc_texts(self):
+        pass
         
     def create_only_doc_bytes(self, doc_name, docBytes):
         con = self.__get_connect()
