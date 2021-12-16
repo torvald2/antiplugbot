@@ -7,6 +7,11 @@ from adaptors.db import DBConnect
 from io import BytesIO
 from heplers import FormatTable
 from services.docs import  DocsPaginator
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
 
 class Stages(Enum):
     LOAD_FILE = 1
