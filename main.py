@@ -5,7 +5,7 @@ from enum import Enum
 from services.similar import Processor
 from adaptors.db import DBConnect
 from io import BytesIO
-from heplers import FormatTable
+from heplers import FormatTable,FormatTableDocs
 from services.docs import  DocsPaginator
 from dotenv import load_dotenv
 
@@ -177,7 +177,7 @@ def keyboardActions(message):
         if session and len(session.get("doc_names",[]))+len(session.get("loaded_docs",[])) >1:
             data = processor.CompareDocs(session.get("doc_names",[]),session.get("loaded_docs",[]) )
             if len(data)>0:
-                bot.send_message(message.from_user.id, FormatTable(data), reply_markup=mackup)
+                bot.send_message(message.from_user.id, FormatTableDocs(data), reply_markup=mackup)
             else:
                 bot.send_message(message.from_user.id, "Совпадений не обнаружено", reply_markup=mackup)
         else:

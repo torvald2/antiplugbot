@@ -100,8 +100,16 @@ class DBConnect:
         
         return (texts, metadata)
 
-    def get_doc_texts(self):
-        pass
+    def get_doc_texts(self,doc_name):
+        texts = []
+        con = self.__get_connect()
+        cur = con.cursor()
+        cur.execute(f"SELECT book, page, text FROM pages WHERE book='{doc_name}'")
+
+        for doc in cur.fetchall():
+            texts.append(doc[2])        
+        return texts
+        
         
     def create_only_doc_bytes(self, doc_name, docBytes):
         con = self.__get_connect()
