@@ -12,6 +12,7 @@ class Stages(Enum):
     LOAD_FILE = 1
     PAGINATE= 2
     GET_BY_NAME=3
+    NOTHING=4
 
 
 dbUser = os.environ.get("DB_USER")
@@ -51,6 +52,7 @@ def keyboardActions(message):
         else:
             m = "Совпадений не обнаружено"
         mackup.row("/menu", "Поиск по названию")
+        sessions.update({message.from_user.id:{"stage":Stages.NOTHING}})
         bot.send_message(message.from_user.id, m, reply_markup=mackup)
 
     elif message.text=="Загрузить документ":
