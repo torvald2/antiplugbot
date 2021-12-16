@@ -45,13 +45,13 @@ def keyboardActions(message):
         docs  = paginator.FindByName(message.text)
         mackup = telebot.types.ReplyKeyboardMarkup()
         if len(docs) >0:
-            message = "Найдены документы"
+            m = "Найдены документы"
             for doc in docs:
                 mackup.row(f'** {doc}')
         else:
-            message = "Совпадений не обнаружено"
+            m = "Совпадений не обнаружено"
         mackup.row("/menu", "Поиск по названию")
-        bot.send_message(message.from_user.id, message, reply_markup=message)
+        bot.send_message(message.from_user.id, m, reply_markup=mackup)
 
     elif message.text=="Загрузить документ":
         sessions.update({message.from_user.id:{"stage":Stages.LOAD_FILE, "page":1}})
