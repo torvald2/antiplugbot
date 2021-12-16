@@ -43,6 +43,7 @@ def createMainMenu(message):
     main_mackup = telebot.types.ReplyKeyboardMarkup()
     main_mackup.row("Загрузить документ")
     main_mackup.row("Все документы", "Сравнить")
+    sessions.pop(message.from_user.id)
 
     bot.send_message(message.from_user.id, "Выберите действие",reply_markup=main_mackup)
 
@@ -76,7 +77,8 @@ def keyboardActions(message):
             mackup.row(">>Следующие 20", "<<Предидущие 20")
         else:
             mackup.row(">>Следующие 20")
-            sessions.update({message.from_user.id:{ "stage":session["stage"],"page":1}})
+            session.update({"page":1})
+            sessions.update({message.from_user.id:session})
         mackup.row("/menu", "Поиск по названию")
 
         docs = paginator.GetPage(1)
@@ -95,7 +97,8 @@ def keyboardActions(message):
             else:
                 mackup.row(">>Следующие 20", "<<Предидущие 20")
             mackup.row("/menu", "Поиск по названию")
-            sessions.update({message.from_user.id:{  "stage":session["stage"],"page":page}})
+            session.update({"page":page})
+            sessions.update({message.from_user.id:session})
             bot.send_message(message.from_user.id, f"Страница {page}", reply_markup=mackup)
         else:
             mackup.row("/menu", )
@@ -117,7 +120,8 @@ def keyboardActions(message):
             else:
                 mackup.row(">>Следующие 20", "<<Предидущие 20")
             mackup.row("/menu", "Поиск по названию")
-            sessions.update({message.from_user.id:{  "stage":session["stage"],"page":page}})
+            session.update({"page":page})
+            sessions.update({message.from_user.id:session})
             bot.send_message(message.from_user.id, f"Страница {page}", reply_markup=mackup)
         else:
             mackup.row("/menu", )
@@ -132,7 +136,6 @@ def keyboardActions(message):
         session = sessions.get(message.from_user.id)
         doc = message.text[3:]
         if  session and session["stage"]  == Stages.COMPARING:
-            print(session)
             docs = session["doc_names"]
             loaded_docs = session["loaded_docs"]
             docs.append(doc)
@@ -140,7 +143,7 @@ def keyboardActions(message):
             mackup = telebot.types.ReplyKeyboardMarkup()
             mackup.row("Из списка", "Загрузить")
             mackup.row("Выполнить сравнение")
-            bot.send_message(message.from_user.id, f"Выбрано ${len(docs)+len(loaded_docs)} документов", reply_markup=mackup)
+            bot.send_message(message.from_user.id, f"Выбрано {len(docs)+len(loaded_docs)} документов", reply_markup=mackup)
             return
 
         doc_bytes = db.doc_by_name(doc)
@@ -214,7 +217,7 @@ def document_action(message):
         mackup = telebot.types.ReplyKeyboardMarkup()
         mackup.row("Из списка", "Загрузить")
         mackup.row("Выполнить сравнение")
-        bot.send_message(message.from_user.id, f"Выбрано ${len(docs)+len(loaded_docs)} документов", reply_markup=mackup)
+        bot.send_message(message.from_user.id, f"Выбрано {len(docs)+len(loaded_docs)} документов", reply_markup=mackup)
     else:
          bot.send_message(message.from_user.id, "Я тебя не понял. Начни с главного меню")
 
