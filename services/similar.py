@@ -23,6 +23,12 @@ class Processor:
         self.texts, self.metadata = self.db.get_all_docs()
         self.v = Vectorizer(self.texts)
         return result
+    
+    def GetDocPages(self,doc):
+        return getPagesText(doc)
+
+    def CompareDocs(self, doc_names,loaded_docs):
+        return []
         
 
 

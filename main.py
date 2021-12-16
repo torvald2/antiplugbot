@@ -13,6 +13,8 @@ class Stages(Enum):
     PAGINATE= 2
     GET_BY_NAME=3
     NOTHING=4
+    COMPARING=5
+
 
 
 dbUser = os.environ.get("DB_USER")
@@ -59,7 +61,7 @@ def keyboardActions(message):
         sessions.update({message.from_user.id:{"stage":Stages.LOAD_FILE, "page":1}})
         hide = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, "Загрузите документ pdf", reply_markup=hide)
-    elif message.text =="Все документы":
+    elif message.text =="Все документы" or message.text=="Из списка":
         mackup = telebot.types.ReplyKeyboardMarkup()
         session = sessions.get(message.from_user.id)
         docs = paginator.GetPage(1)
@@ -69,7 +71,7 @@ def keyboardActions(message):
             mackup.row(">>Следующие 20", "<<Предидущие 20")
         else:
             mackup.row(">>Следующие 20")
-            sessions.update({message.from_user.id:{"stage":Stages.PAGINATE, "page":1}})
+            sessions.update({message.from_user.id:{ "stage":session["stage"],"page":1}})
         mackup.row("/menu", "Поиск по названию")
 
         docs = paginator.GetPage(1)
@@ -88,7 +90,7 @@ def keyboardActions(message):
             else:
                 mackup.row(">>Следующие 20", "<<Предидущие 20")
             mackup.row("/menu", "Поиск по названию")
-            sessions.update({message.from_user.id:{"stage":Stages.PAGINATE, "page":page}})
+            sessions.update({message.from_user.id:{  "stage":session["stage"],"page":page}})
             bot.send_message(message.from_user.id, f"Страница {page}", reply_markup=mackup)
         else:
             mackup.row("/menu", )
@@ -110,7 +112,7 @@ def keyboardActions(message):
             else:
                 mackup.row(">>Следующие 20", "<<Предидущие 20")
             mackup.row("/menu", "Поиск по названию")
-            sessions.update({message.from_user.id:{"stage":Stages.PAGINATE, "page":page}})
+            sessions.update({message.from_user.id:{  "stage":session["stage"],"page":page}})
             bot.send_message(message.from_user.id, f"Страница {page}", reply_markup=mackup)
         else:
             mackup.row("/menu", )
@@ -122,8 +124,22 @@ def keyboardActions(message):
          bot.send_message(message.from_user.id, "Введите запрос для поиска", reply_markup=hide)
     
     elif message.text.startswith("**"):
+        session = sessions.get(message.from_user.id)
         doc = message.text[3:]
+        if  session and session["stage"]  == Stages.COMPARING:
+            docs = session["doc_names"]
+            loaded_docs = session["loaded_docs"]
+            docs.append(doc)
+            sessions.update({message.from_user.id:{"stage":Stages.COMPARING,'doc_names':docs, 'loaded_docs':loaded_docs }})
+            mackup = telebot.types.ReplyKeyboardMarkup()
+            mackup.row("Из списка", "Загрузить")
+            mackup.row("Выполнить сравнение")
+            bot.send_message(message.from_user.id, f"Выбрано ${len(docs)+len(loaded_docs)} документов", reply_markup=mackup)
+            return
+
         doc_bytes = db.doc_by_name(doc)
+        session = sessions.get(message.from_user.id)
+
 
         hide = telebot.types.ReplyKeyboardRemove()
         if doc_bytes:
@@ -135,17 +151,28 @@ def keyboardActions(message):
         mackup = telebot.types.ReplyKeyboardMarkup()
         mackup.row("/menu", "Поиск по названию")
         bot.send_message(message.from_user.id,"Действие:",reply_markup=mackup)
+    elif message.text == "Сравнить":
+         sessions.update({message.from_user.id:{"stage":Stages.COMPARING, 'doc_names':[], 'loaded_docs':[]}})
+         mackup = telebot.types.ReplyKeyboardMarkup()
+         mackup.row("Из списка", "Загрузить")
+         mackup.row("Выполнить сравнение")
+         bot.send_message(message.from_user.id, f"Выбрано 0 документов", reply_markup=mackup)
 
-
-
-        
-
-
-        
-
-
-
-
+    elif message.text == "Загрузить":
+        hide = telebot.types.ReplyKeyboardRemove()
+        bot.send_message(message.from_user.id, "Загрузите документ pdf", reply_markup=hide)
+    elif message.text == "Выполнить сравнение":
+        session = sessions.get(message.from_user.id)
+        mackup = telebot.types.ReplyKeyboardMarkup()
+        mackup.row("/menu", "Сравнить")
+        if session and len(session.get("doc_names",[]))+len(session.get("loaded_docs",[])) >1:
+            data = processor.CompareDocs(session.get("doc_names",[]),session.get("loaded_docs",[]) )
+            if len(data)>0:
+                bot.send_message(message.from_user.id, FormatTable(data), reply_markup=mackup)
+            else:
+                bot.send_message(message.from_user.id, "Совпадений не обнаружено", reply_markup=mackup)
+        else:
+            bot.send_message(message.from_user.id, "Выбрано <2 документа", reply_markup=mackup)
 
 
 @bot.message_handler(content_types=["document"])
@@ -167,8 +194,24 @@ def document_action(message):
 
         else:
             bot.send_message(message.from_user.id,"Совпадений не обнаружено")
+    elif session and session["stage"] == Stages.COMPARING:
+        raw = message.document.file_id
+        file_info = bot.get_file(raw)
+        bot.send_message(message.from_user.id, "Загрузка файла...")
+        downloaded_file = bot.download_file(file_info.file_path)
+        docs = session["doc_names"]
+        loaded_docs = session["loaded_docs"]
+        buf = BytesIO(downloaded_file)
+        doc = processor.GetDocPages(buf)
+        loaded_docs.append({"name":message.document.file_name, "pages":doc})
+        sessions.update({message.from_user.id:{"stage":Stages.COMPARING,'doc_names':docs, 'loaded_docs':loaded_docs }})
+        mackup = telebot.types.ReplyKeyboardMarkup()
+        mackup.row("Из списка", "Загрузить")
+        mackup.row("Выполнить сравнение")
+        bot.send_message(message.from_user.id, f"Выбрано ${len(docs)+len(loaded_docs)} документов", reply_markup=mackup)
     else:
          bot.send_message(message.from_user.id, "Я тебя не понял. Начни с главного меню")
+
 
 
 bot.infinity_polling()
