@@ -5,7 +5,7 @@ from enum import Enum
 from services.similar import Processor
 from adaptors.db import DBConnect
 from io import BytesIO
-from heplers import FormatTable, FormatList
+from heplers import FormatTable
 from services.docs import  DocsPaginator
 
 class Stages(Enum):
