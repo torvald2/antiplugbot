@@ -116,7 +116,7 @@ class DBConnect:
         data = []
         con = self.__get_connect()
         cur = con.cursor()
-        cur.execute("SELECT doc_name FROM docs LIMIT=%s OFFSET=%s",(limit, offset))
+        cur.execute("SELECT doc_name FROM docs LIMIT %s OFFSET %s",(limit, offset))
         for doc in cur.fetchall():
             data.append(doc[0])
         cur.close()
