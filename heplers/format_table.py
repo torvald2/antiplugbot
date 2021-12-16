@@ -1,5 +1,7 @@
+from io import StringIO
 def FormatTable(items):
-    res = '<pre>|        Оригинал        | Исходная исх. | Страница ориг. |\n'
+    buf = StringIO()
+    res = '|        Оригинал        | Исходная исх. | Страница ориг. |\n'
     for item in items:
         if len(item["doc"]) >24:
             doc = item["doc"][:24]
@@ -16,9 +18,7 @@ def FormatTable(items):
         else:
             page = f'       {item["page"]}      '
         
-        res += f'|{doc}|{source}|{page}|\n'
-    res+= "</pre>"
-
+        buf.write(f'|{doc}|{source}|{page}|\n')
     return res
 
 def FormatTableDocs(items):
