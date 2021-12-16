@@ -126,7 +126,7 @@ def keyboardActions(message):
         hide = telebot.types.ReplyKeyboardRemove()
         if doc_bytes:
             bot.send_message(message.from_user.id, "Загрузка", reply_markup=hide)
-            bot.send_document(message.from_user.id, doc_bytes)
+            bot.send_document(message.from_user.id, doc_bytes, visible_file_name=doc)
         else:
             bot.send_message(message.from_user.id, "Что-то пошло не так", reply_markup=hide)
         
