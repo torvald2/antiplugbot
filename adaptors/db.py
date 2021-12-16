@@ -135,7 +135,7 @@ class DBConnect:
     def doc_by_name(self, name):
         con = self.__get_connect()
         cur = con.cursor()
-        cur.execute("SELECT data FROM docs WHERE doc_name=%s ",(name))
+        cur.execute(f"SELECT data FROM docs WHERE doc_name='{name}' ",)
         blob = cur.fetchone()
         cur.close()
         con.close()

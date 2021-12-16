@@ -119,7 +119,7 @@ def keyboardActions(message):
          hide = telebot.types.ReplyKeyboardRemove()
          bot.send_message(message.from_user.id, "Введите запрос для поиска", reply_markup=hide)
     
-    elif message.text.startswith("**")!=-1:
+    elif message.text.startswith("**"):
         doc = message.text[3:]
         doc_bytes = db.doc_by_name(doc)
 
