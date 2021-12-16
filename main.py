@@ -44,6 +44,7 @@ def createMainMenu(message):
     main_mackup.row("Загрузить документ")
     main_mackup.row("Все документы", "Сравнить")
     sessions.pop(message.from_user.id, None)
+    sessions.update({message.from_user.id:{"stage":Stages.NOTHING}})
 
     bot.send_message(message.from_user.id, "Выберите действие",reply_markup=main_mackup)
 
@@ -67,6 +68,7 @@ def keyboardActions(message):
         sessions.update({message.from_user.id:{"stage":Stages.LOAD_FILE, "page":1}})
         hide = telebot.types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, "Загрузите документ pdf", reply_markup=hide)
+    
     elif message.text =="Все документы" or message.text=="Из списка":
         mackup = telebot.types.ReplyKeyboardMarkup()
         session = sessions.get(message.from_user.id)
