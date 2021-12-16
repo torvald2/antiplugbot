@@ -22,7 +22,7 @@ def FormatTable(items):
     return res
 
 def FormatTableDocs(items):
-    res = '<pre>|        Документ1        |        Документ2        |Стр1|Стр2|\n'
+    res = '<pre>|        Документ1       |        Документ2       |Стр1|Стр2|\n'
     for item in items:
         if len(item["doc"]) >24:
             doc = item["doc"][:24]
@@ -35,14 +35,14 @@ def FormatTableDocs(items):
             doc1 = item["source_doc"] + ''.join([' ' for x in range(24-len(item["source_doc"]))])
 
         if item["source"]>9:
-            source = f'{item["source"]}'
+            source = f' {item["source"]} '
         else:
-            source = f'{item["source"]}'
+            source = f' {item["source"]}  '
 
         if item["page"]>9:
-            page = f'{item["page"]}'
+            page = f' {item["page"]} '
         else:
-            page = f'{item["page"]}'
+            page = f' {item["page"]}  '
         
         res += f'|{doc}|{doc1}|{source}|{page}|\n'
     res+= "</pre>"

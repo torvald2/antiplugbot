@@ -50,12 +50,12 @@ class Processor:
         for i in vectors:
             y=0
             for j in vectors:
-                
                 dist = c(i,j)
                 if dist >0.5:
-                    res.append({"cosine":dist,"source": metadata[y][1],"source_doc":metadata[y][0],"doc":metadata[x][0], "page":metadata[x][1]})
+                    if metadatas[y][0] != metadatas[x][0]:
+                        res.append({"cosine":dist,"source": metadatas[y][1],"source_doc":metadatas[y][0],"doc":metadatas[x][0], "page":metadatas[x][1]})
                 y+=1
-            i+=1
+            x+=1
         return res
         
 

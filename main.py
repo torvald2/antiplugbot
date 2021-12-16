@@ -5,7 +5,7 @@ from enum import Enum
 from services.similar import Processor
 from adaptors.db import DBConnect
 from io import BytesIO
-from heplers import FormatTable,FormatTableDocs
+from heplers import FormatTable, FormatTableDocs
 from services.docs import  DocsPaginator
 from dotenv import load_dotenv
 
@@ -43,7 +43,7 @@ def createMainMenu(message):
     main_mackup = telebot.types.ReplyKeyboardMarkup()
     main_mackup.row("Загрузить документ")
     main_mackup.row("Все документы", "Сравнить")
-    sessions.pop(message.from_user.id)
+    sessions.pop(message.from_user.id, None)
 
     bot.send_message(message.from_user.id, "Выберите действие",reply_markup=main_mackup)
 

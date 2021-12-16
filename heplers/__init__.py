@@ -1,1 +1,1 @@
-from heplers.format_table import FormatTable
+from heplers.format_table import FormatTable, FormatTableDocs
