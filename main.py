@@ -67,7 +67,7 @@ def keyboardActions(message):
         docs = paginator.GetPage(1)
         for doc in docs:
             mackup.row(f'** {doc}')
-        if (session and session["page"]>1):
+        if (session and session.get("page",None)>1):
             mackup.row(">>Следующие 20", "<<Предидущие 20")
         else:
             mackup.row(">>Следующие 20")
