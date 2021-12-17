@@ -1,7 +1,7 @@
-from io import StringIO
+from io import BytesIO
 def FormatTable(items):
-    buf = StringIO()
-    res = '|        Оригинал        | Исходная исх. | Страница ориг. |\n'
+    buf = ''
+    buf+='|        Оригинал        | Исходная исх. | Страница ориг. |\n'
     for item in items:
         if len(item["doc"]) >24:
             doc = item["doc"][:24]
@@ -18,11 +18,11 @@ def FormatTable(items):
         else:
             page = f'       {item["page"]}      '
         
-        buf.write(f'|{doc}|{source}|{page}|\n')
-    return res
+        buf+=f'|{doc}|{source}|{page}|\n'
+    return buf.encode("utf-8")
 
 def FormatTableDocs(items):
-    res = '<pre>|        Документ1       |        Документ2       |Стр1|Стр2|\n'
+    res = '|        Документ1       |        Документ2       |Стр1|Стр2|\n'
     for item in items:
         if len(item["doc"]) >24:
             doc = item["doc"][:24]
@@ -45,9 +45,8 @@ def FormatTableDocs(items):
             page = f' {item["page"]}  '
         
         res += f'|{doc}|{doc1}|{source}|{page}|\n'
-    res+= "</pre>"
 
-    return res
+    return res.encode("utf-8")
 
 
         

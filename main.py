@@ -179,8 +179,7 @@ def keyboardActions(message):
         if session and len(session.get("doc_names",[]))+len(session.get("loaded_docs",[])) >1:
             data = processor.CompareDocs(session.get("doc_names",[]),session.get("loaded_docs",[]) )
             if len(data)>0:
-                bot.send_document(message.from_user.id, FormatTableDocs(data).read(), visible_file_name="res.txt")
-                bot.send_message(message.from_user.id, "Действие:", reply_markup=mackup)
+                bot.send_document(message.from_user.id, FormatTableDocs(data), visible_file_name="res.txt",reply_markup=mackup)
             else:
                 bot.send_message(message.from_user.id, "Совпадений не обнаружено", reply_markup=mackup)
         else:
@@ -202,7 +201,9 @@ def document_action(message):
             bot.send_message(message.from_user.id,"Найдено совпадение:")
             mackup = telebot.types.ReplyKeyboardMarkup()
             mackup.row("/menu", "Загрузить документ")
-            bot.send_message(message.from_user.id, FormatTable(sim), reply_markup=mackup)
+            data =  FormatTable(sim)
+            bot.send_document(message.from_user.id,data, visible_file_name="res.txt", reply_markup=mackup)
+
 
         else:
             bot.send_message(message.from_user.id,"Совпадений не обнаружено")
