@@ -78,9 +78,14 @@ def keyboardActions(message):
         if (session and  session.get("page",None) and session.get("page",0)>1):
             mackup.row(">>Следующие 20", "<<Предидущие 20")
         else:
+
             mackup.row(">>Следующие 20")
-            session.update({"page":1})
-            sessions.update({message.from_user.id:session})
+            if session:
+                session.update({"page":1})
+                sessions.update({message.from_user.id:session})
+            else:
+                sessions.update({message.from_user.id:{"page":1, "stage":Stages.PAGINATE}})
+
         mackup.row("/menu", "Поиск по названию")
 
         docs = paginator.GetPage(1)
